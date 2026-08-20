@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block content %}
+<div class="head"><div><h1 id="ctitle">Course</h1><p id="cdesc">Loading...</p></div><a class="buttonlink" href="/courses">← Courses</a></div>
+<div class="course-layout"><section class="panel"><div class="progress-head"><b>Course Progress</b><span id="pct">0%</span></div><div class="bar"><div id="barfill"></div></div><h2>Lessons & Materials</h2><div id="lessons"></div></section>
+<aside class="panel"><h2>Assessment</h2><div id="quizbox">No assessment loaded.</div><div class="assignment-list" id="assignmentList"></div><div id="assignmentCreate" class="assignment-create" hidden>
+<h3>Create assignment</h3><form id="assignmentForm"><label>Title<input name="title" required maxlength="160"></label><label>Instructions<textarea name="instructions" required></textarea></label><div class="form-row"><label>Max points<input name="max_points" type="number" min="1" value="100" required></label><label>Due date<input name="due_at" type="datetime-local"></label></div><button type="submit">Publish assignment</button><span id="assignmentStatus" class="muted"></span></form></div></aside></div>
+{% endblock %}

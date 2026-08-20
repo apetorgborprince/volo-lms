@@ -1,0 +1,215 @@
+[
+  {
+    "id": "s1-p6",
+    "section": "Section 1",
+    "title": "Investigating the presence of starch in plants",
+    "type": "experiment",
+    "engine": "starch"
+  },
+  {
+    "id": "s1-p11",
+    "section": "Section 1",
+    "title": "Produce a solar oven",
+    "type": "design",
+    "engine": "solar_oven"
+  },
+  {
+    "id": "s1-p12",
+    "section": "Section 1",
+    "title": "Balloon-powered cars",
+    "type": "design",
+    "engine": "balloon_car"
+  },
+  {
+    "id": "s1-p5",
+    "section": "Section 1",
+    "title": "The Simple Pendulum Experiment",
+    "type": "experiment",
+    "engine": "pendulum"
+  },
+  {
+    "id": "s2-p5",
+    "section": "Section 2",
+    "title": "Comparing the lustre of different metals",
+    "type": "experiment",
+    "engine": "lustre",
+    "alignment": {"classification": "Curriculum requirement", "learning_indicator_code": "1.1.1.LI.1", "objective": "Classify different solids and their uses.", "source_page": 30}
+  },
+  {
+    "id": "s2-p6",
+    "section": "Section 2",
+    "title": "Demonstrating hardness of metals",
+    "type": "experiment",
+    "engine": "hardness",
+    "alignment": {"classification": "Curriculum requirement", "learning_indicator_code": "1.1.1.LI.1", "objective": "Classify different solids and their uses.", "source_page": 30}
+  },
+  {
+    "id": "s2-p13",
+    "section": "Section 2",
+    "title": "Electrical conductivity of solid materials",
+    "type": "experiment",
+    "engine": "conductivity",
+    "alignment": {"classification": "Curriculum requirement", "learning_indicator_code": "1.1.1.LI.1", "objective": "Classify different solids and their uses.", "source_page": 30}
+  },
+  {
+    "id": "s3-p2",
+    "section": "Section 3",
+    "title": "Diffusion using potassium permanganate",
+    "type": "experiment",
+    "engine": "diffusion"
+  },
+  {
+    "id": "s3-p3",
+    "section": "Section 3",
+    "title": "Diffusion of perfume through air",
+    "type": "demonstration",
+    "engine": "gas_diffusion"
+  },
+  {
+    "id": "s3-p7",
+    "section": "Section 3",
+    "title": "Osmosis in model cells using Visking tubing",
+    "type": "experiment",
+    "engine": "osmosis"
+  },
+  {
+    "id": "s3-p8",
+    "section": "Section 3",
+    "title": "Osmosis in plant tissues",
+    "type": "experiment",
+    "engine": "potato_osmosis"
+  },
+  {
+    "id": "s4-p4",
+    "section": "Section 4",
+    "title": "Pollination simulation",
+    "type": "simulation",
+    "engine": "pollination"
+  },
+  {
+    "id": "s4-p8",
+    "section": "Section 4",
+    "title": "Vegetative propagation through cuttings",
+    "type": "simulation",
+    "engine": "cuttings"
+  },
+  {
+    "id": "s4-p9",
+    "section": "Section 4",
+    "title": "Vegetative propagation through grafting",
+    "type": "simulation",
+    "engine": "grafting"
+  },
+  {
+    "id": "s4-p10",
+    "section": "Section 4",
+    "title": "Vegetative propagation through layering",
+    "type": "simulation",
+    "engine": "layering"
+  },
+  {
+    "id": "s4-p11",
+    "section": "Section 4",
+    "title": "Micropropagation / tissue culture",
+    "type": "simulation",
+    "engine": "micropropagation"
+  },
+  {
+    "id": "s5-p8",
+    "section": "Section 5",
+    "title": "Solar panel output under different lighting conditions",
+    "type": "experiment",
+    "engine": "solar_panel"
+  },
+  {
+    "id": "s5-p9",
+    "section": "Section 5",
+    "title": "Environmental factors affecting solar panels",
+    "type": "investigation",
+    "engine": "solar_environment"
+  },
+  {
+    "id": "s6-p2",
+    "section": "Section 6",
+    "title": "Effects of different surfaces and friction",
+    "type": "experiment",
+    "engine": "friction"
+  },
+  {
+    "id": "s6-p4",
+    "section": "Section 6",
+    "title": "Investigating gravitational force",
+    "type": "experiment",
+    "engine": "gravity"
+  },
+  {
+    "id": "s6-p5",
+    "section": "Section 6",
+    "title": "Exploring velocity",
+    "type": "experiment",
+    "engine": "velocity"
+  },
+  {
+    "id": "s6-p8",
+    "section": "Section 6",
+    "title": "Cohesive and adhesive forces",
+    "type": "experiment",
+    "engine": "cohesion"
+  },
+  {
+    "id": "s7-p3",
+    "section": "Section 7",
+    "title": "Build an LED circuit",
+    "type": "electronics",
+    "engine": "led"
+  },
+  {
+    "id": "s7-p6",
+    "section": "Section 7",
+    "title": "Build a simple audio amplifier",
+    "type": "electronics",
+    "engine": "amplifier"
+  },
+  {
+    "id": "s7-p4",
+    "section": "Section 7",
+    "title": "Build a light-dependent resistor circuit",
+    "type": "electronics",
+    "engine": "ldr"
+  },
+  {
+    "id": "s8-p5",
+    "section": "Section 8",
+    "title": "Identifying lifestyle diseases",
+    "type": "fieldwork",
+    "engine": "lifestyle"
+  },
+  {
+    "id": "s8-p6",
+    "section": "Section 8",
+    "title": "Drugs and their negative effects",
+    "type": "fieldwork",
+    "engine": "drugs"
+  },
+  {
+    "id": "s9-p3",
+    "section": "Section 9",
+    "title": "Making African black soap",
+    "type": "production",
+    "engine": "black_soap"
+  },
+  {
+    "id": "s9-p4",
+    "section": "Section 9",
+    "title": "Effect of potash source on local soap",
+    "type": "production",
+    "engine": "potash_soap"
+  },
+  {
+    "id": "s9-p5",
+    "section": "Section 9",
+    "title": "Local gari production observation",
+    "type": "fieldwork",
+    "engine": "gari"
+  }
+]

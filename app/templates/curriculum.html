@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block content %}
+<section class="v5-head curriculum-head"><div><div class="eyebrow">VOLO V5.1 · OFFICIAL CURRICULUM</div><h1>Curriculum Explorer</h1><p>Explore General Science records that have been verified against the supplied NaCCA/GES curriculum.</p></div><span class="source-badge">Read-only official data</span></section>
+<section class="curriculum-summary" id="curriculumSummary" aria-live="polite"></section>
+<section class="panel curriculum-panel"><div class="curriculum-tools"><label>Year<select id="curriculumYear"><option value="">All available years</option></select></label><label>Strand<select id="curriculumStrand"><option value="">All strands</option></select></label><label class="curriculum-search">Search official wording or code<input id="curriculumSearch" type="search" placeholder="e.g. 1.1.1.LI.1 or solids"></label></div><p class="curriculum-note">Each result shows its PDF source page. Records not yet verified from the supplied curriculum are deliberately excluded.</p><div id="curriculumResults" class="curriculum-results"></div></section>
+{% endblock %}

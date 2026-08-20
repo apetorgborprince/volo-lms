@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block content %}
+<div class="head"><div><h1>AI Study Tutor</h1><p>Learning companion for Integrated Science.</p></div></div>
+<div class="panel chat"><div id="messages"><div class="msg bot">Hello. Ask me about diffusion, osmosis, cells, circuits or another Integrated Science topic.</div></div><div class="chatrow"><input id="q" placeholder="Ask a question..." onkeydown="if(event.key==='Enter')askAI()"><button onclick="askAI()">Send</button></div></div>
+{% endblock %}

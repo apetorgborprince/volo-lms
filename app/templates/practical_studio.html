@@ -1,0 +1,87 @@
+{% extends "base.html" %}{% block content %}
+<div class="lab-shell">
+  <header class="lab-header">
+    <div>
+      <div class="eyebrow">GENERAL SCIENCE • VIRTUAL PRACTICAL LAB</div>
+      <h1 id="labTitle">Virtual Practical Laboratory</h1>
+      <p id="labSubtitle">Select a practical, enter the laboratory and perform the investigation.</p>
+    </div>
+    <div class="lab-actions">
+      <a class="buttonlink" href="/courses">← Courses</a>
+      <button class="lab-reset" id="resetLab">Reset experiment</button>
+    </div>
+  </header>
+
+  <div class="lab-layout">
+    <aside class="lab-sidebar panel">
+      <div class="lab-search">
+        <input id="practicalSearch" class="input" placeholder="Search practicals...">
+      </div>
+      <div id="practicalList"></div>
+    </aside>
+
+    <main class="lab-workspace">
+      <section id="labEmpty" class="panel empty-lab">
+        <div class="empty-icon">⚗</div>
+        <h2>Choose a practical laboratory</h2>
+        <p>Each laboratory includes apparatus, a workbench, guided procedure, observations, measurements, analysis and a practical assessment.</p>
+      </section>
+
+      <section id="labView" hidden>
+        <div class="lab-progress panel">
+          <div class="progress-top">
+            <div><span id="labSection"></span><strong id="labType"></strong></div>
+            <div><span id="stepCounter">Step 1 of 1</span><span id="labScore">Score: 0%</span></div>
+          </div>
+          <div class="progress-track"><div id="progressBar"></div></div>
+        </div>
+        <section class="lab-alignment panel" id="labAlignment" aria-live="polite"></section>
+
+        <div class="lab-grid">
+          <section class="panel apparatus-panel">
+            <div class="panel-heading">
+              <h2>Apparatus</h2><span id="apparatusHint">Use the items required for this practical.</span>
+            </div>
+            <div id="apparatus"></div>
+            <div class="safety-box"><b>Safety</b><p id="safetyText">Follow teacher supervision and the safety requirements of the source activity.</p></div>
+          </section>
+
+          <section class="panel bench-panel">
+            <div class="panel-heading">
+              <h2>Laboratory Bench</h2><span id="benchState">Ready</span>
+            </div>
+            <div id="bench" class="bench"></div>
+            <div id="instrumentPanel" class="instrument-panel"></div>
+          </section>
+        </div>
+
+        <div class="lab-bottom-grid">
+          <section class="panel procedure-panel">
+            <div class="panel-heading"><h2>Procedure</h2><span id="procedureState">Guided mode</span></div>
+            <div id="procedure"></div>
+            <div class="procedure-actions">
+              <button id="prevStep">← Previous</button>
+              <button id="performStep" class="primary">Perform step</button>
+              <button id="nextStep">Next →</button>
+            </div>
+          </section>
+
+          <section class="panel record-panel">
+            <div class="panel-heading"><h2>Observation & Data</h2><button id="saveRecord">Save</button></div>
+            <div id="dataCapture"></div>
+            <textarea id="notes" class="textarea" placeholder="Enter observations, calculations and conclusion..."></textarea>
+          </section>
+        </div>
+
+        <section class="panel analysis-panel">
+          <div class="panel-heading"><h2>Analysis & Assessment</h2><span id="assessmentState">Complete the practical to unlock.</span></div>
+          <div id="assessment"></div>
+        </section>
+      </section>
+      {% if session.get('role') in ['admin','tutor','super_admin'] %}
+      <section class="panel practical-designer"><div class="panel-heading"><h2>Design a curriculum-aligned practical</h2><span>Teacher workspace</span></div><form id="practicalDesigner"><div class="planner-grid"><label>Title<input name="title" required placeholder="Practical title"></label><label>Learning indicator<select name="learning_indicator_id" id="practicalIndicator" required></select></label></div><label class="planner-content">Objective<textarea name="objective" required placeholder="What will learners investigate or demonstrate?"></textarea></label><div class="planner-grid"><label>Apparatus and materials<textarea name="apparatus" required placeholder="One item per line or comma-separated"></textarea></label><label>Safety instructions<textarea name="safety_instructions" required placeholder="Risks, controls and supervision requirements"></textarea></label></div><label class="planner-content">Procedure<textarea name="procedure" required placeholder="Numbered learner-centred procedure"></textarea></label><label class="planner-content">Assessment prompt<textarea name="assessment_prompt" required placeholder="Evidence learners must submit or explain"></textarea></label><div class="planner-actions"><button type="submit">Save practical design</button><span id="practicalDesignerStatus" aria-live="polite"></span></div></form></section>
+      {% endif %}
+    </main>
+  </div>
+</div>
+{% endblock %}
