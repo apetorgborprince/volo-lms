@@ -78,7 +78,7 @@
           <div id="assessment"></div>
         </section>
       </section>
-      {% if session.get('role') in ['admin','tutor','super_admin'] %}
+      {% if session.get('role') in ['admin','tutor','admin'] %}
       <section class="panel practical-designer"><div class="panel-heading"><h2>Design a curriculum-aligned practical</h2><span>Teacher workspace</span></div><form id="practicalDesigner"><div class="planner-grid"><label>Title<input name="title" required placeholder="Practical title"></label><label>Learning indicator<select name="learning_indicator_id" id="practicalIndicator" required></select></label></div><label class="planner-content">Objective<textarea name="objective" required placeholder="What will learners investigate or demonstrate?"></textarea></label><div class="planner-grid"><label>Apparatus and materials<textarea name="apparatus" required placeholder="One item per line or comma-separated"></textarea></label><label>Safety instructions<textarea name="safety_instructions" required placeholder="Risks, controls and supervision requirements"></textarea></label></div><label class="planner-content">Procedure<textarea name="procedure" required placeholder="Numbered learner-centred procedure"></textarea></label><label class="planner-content">Assessment prompt<textarea name="assessment_prompt" required placeholder="Evidence learners must submit or explain"></textarea></label><div class="planner-actions"><button type="submit">Save practical design</button><span id="practicalDesignerStatus" aria-live="polite"></span></div></form></section>
       {% endif %}
     </main>

@@ -1,18 +1,18 @@
 {% extends "base.html" %}{% block content %}
-<div class="v5-head"><div><div class="eyebrow">VOLO V5 · COMMAND CENTER</div><h1>Good day, {{session.get('name')}}</h1><p>Your learning ecosystem is connected and ready.</p></div>
+<div class="v5-head"><div><div class="eyebrow">VOLO LMS · COMMAND CENTER</div><h1>Good day, {{session.get('name')}}</h1><p>Your learning ecosystem is connected and ready.</p></div>
 <div class="head-actions"><a class="buttonlink" href="/courses">Open Learning</a><a class="buttonlink secondary" href="/practical-studio">Open Labs</a></div></div>
 <div id="v5Stats" class="grid v5-stats"></div>
 <div class="dashboard-grid"><section class="panel hero-panel"><div class="panel-heading"><h2>Continue where you left off</h2><span>Connected workspace</span></div>
 <div class="feature-cards">
 <a class="feature-card" href="/courses"><div class="feature-icon">📚</div><div><b>Learning Engine</b><p>Courses, lessons, assignments and learning paths.</p></div><span>→</span></a>
 <a class="feature-card" href="/practical-studio"><div class="feature-icon">🔬</div><div><b>Practical Intelligence</b><p>Interactive experiments, apparatus and lab workbenches.</p></div><span>→</span></a>
-<a class="feature-card" href="/ai"><div class="feature-icon">🤖</div><div><b>Volo AI</b><p>Personal tutoring, feedback and intelligent guidance.</p></div><span>→</span></a>
+<a class="feature-card" href="/courses"><div class="feature-icon">📝</div><div><b>Assessments</b><p>Quizzes, assignments and evidence-based progress.</p></div><span>→</span></a>
 <a class="feature-card" href="{% if session.get('role')=='student' %}/studio{% else %}/courses{% endif %}"><div class="feature-icon">💻</div><div><b>Skills Studio</b><p>Coding, digital skills and applied learning activities.</p></div><span>→</span></a>
 </div></section>
 <aside class="panel pulse-panel"><div class="panel-heading"><h2>Volo Pulse</h2><span>Platform status</span></div>
 <div class="pulse"><span class="pulse-ring"></span><div><b>Platform connected</b><small>Core services are online</small></div></div>
-<div class="pulse-list"><div><span>🔬</span> V4 labs integrated <b>Ready</b></div><div><span>📝</span> Assessment engine <b>Ready</b></div><div><span>🤖</span> AI integration <b>Ready</b></div><div><span>📊</span> Analytics layer <b>Active</b></div></div></aside></div>
+<div class="pulse-list"><div><span>🔬</span> V4 labs integrated <b>Ready</b></div><div><span>📝</span> Assessment engine <b>Ready</b></div><div><span>👥</span> Account management <b>Active</b></div><div><span>📊</span> Analytics layer <b>Active</b></div></div></aside></div>
 <section class="panel roadmap" id="analytics"><div class="panel-heading"><h2>Volo V5 platform map</h2><span>Integrated architecture</span></div>
-<div class="roadmap-grid"><div><b>01 · Learning</b><span>Courses · Lessons · Resources</span></div><div><b>02 · Practical</b><span>V4 Virtual Labs · Experiments</span></div><div><b>03 · Assessment</b><span>Quizzes · Exams · Practical scoring</span></div><div><b>04 · AI</b><span>Tutor · Teacher Copilot · Feedback</span></div><div><b>05 · Analytics</b><span>Progress · Insights · Early warning</span></div><div><b>06 · Administration</b><span>People · Classes · School controls</span></div></div></section>
+<div class="roadmap-grid"><div><b>01 · Learning</b><span>Courses · Lessons · Resources</span></div><div><b>02 · Practical</b><span>V4 Virtual Labs · Experiments</span></div><div><b>03 · Assessment</b><span>Quizzes · Exams · Practical scoring</span></div><div><b>04 · Analytics</b><span>Progress · Insights · Performance</span></div><div><b>05 · Administration</b><span>People · Classes · School controls</span></div></div></section>
 <section class="panel" id="profile"><div class="panel-heading"><h2>My Volo profile</h2><span>Identity & learning record</span></div><div id="profileCard" class="profile-card">Loading profile…</div></section>
 {% endblock %}

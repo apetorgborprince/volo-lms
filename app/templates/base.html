@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Volo V5 — Intelligent Education Platform</title><link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}"></head>
+<title>Volo LMS — Science Learning Platform</title><link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}"></head>
 <body data-role="{{session.get('role','')}}"><div class="app-shell">
-<aside class="sidebar"><a class="brand brand-link" href="/dashboard"><span>V</span><strong>VOLO</strong><small>V5</small></a>
+<aside class="sidebar"><a class="brand brand-link" href="/dashboard"><span>V</span><strong>VOLO</strong><small>LMS</small></a>
 <div class="role-pill">{{ session.get('role','')|replace('_',' ')|title }}</div><nav class="side-nav">
 <a href="/dashboard" class="nav-item">🏠 <span>Command Center</span></a><a href="/courses" class="nav-item">📚 <span>Learning</span></a>
 <a href="/practical-studio" class="nav-item">🔬 <span>Practical Studio</span></a>
 <a href="/curriculum" class="nav-item">🧭 <span>Curriculum Explorer</span></a>
-{% if session.get('role') in ['student','tutor','admin','super_admin'] %}<a href="/ai" class="nav-item">🤖 <span>Volo AI</span></a>{% endif %}
-{% if session.get('role') in ['admin','tutor','super_admin'] %}<a href="/students" class="nav-item">👥 <span>People</span></a><a href="/manage-courses" class="nav-item">🗂️ <span>Course Management</span></a>{% endif %}
+{% if session.get('role') in ['student','tutor','admin'] %}{% endif %}
+{% if session.get('role') in ['admin','tutor'] %}<a href="/students" class="nav-item">👥 <span>People</span></a><a href="/manage-courses" class="nav-item">🗂️ <span>Course Management</span></a>{% endif %}
 {% if session.get('role') == 'student' %}<a href="/studio" class="nav-item">💻 <span>Coding Studio</span></a>{% endif %}
 <div class="nav-section">PLATFORM</div><a href="/dashboard#analytics" class="nav-item">📊 <span>Analytics</span></a>
 <a href="/dashboard#notifications" class="nav-item">🔔 <span>Notifications</span></a><a href="/dashboard#profile" class="nav-item">👤 <span>My Profile</span></a>
