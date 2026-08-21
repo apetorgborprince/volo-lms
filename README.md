@@ -1,30 +1,77 @@
-# Volo LMS — V5 Integrated Intelligent Education Platform
+# Volo LMS — Production V6
 
-V5.0 upgrades the V4 Realistic Virtual Laboratories project into one integrated platform.
+Volo LMS is a Flask-based science learning platform using the existing professional Volo HTML/CSS/JavaScript interface.
 
-## Included now
-- Volo V5 Command Center
-- Student, Teacher, Parent, Administrator and Super Admin role architecture
-- Integrated sidebar navigation and responsive shell
-- Central profile endpoint
-- Platform overview endpoint
-- Parent/guardian demo link
-- V4 Practical Studio retained
-- Existing courses, lessons, quizzes, student management and AI integration retained
+## Production account model
 
-## Demo accounts
-- Administrator: `admin / admin123`
-- Teacher: `tutor.k / tutor123`
-- Student: `kwame.m / student123`
-- Parent: `parent.a / parent123`
+There are exactly three Volo application roles:
 
-## Run
-1. `python -m venv .venv`
-2. Activate the environment
-3. `pip install -r requirements.txt`
-4. Copy `.env.example` to `.env` and set `SECRET_KEY`
-5. `python run.py`
-6. Open `http://127.0.0.1:5000`
+- **Administrator (`admin`)** — system owner. The initial administrator is created from environment variables; no administrator password is embedded in source code.
+- **Teacher (`tutor`)** — created by an Administrator.
+- **Student (`student`)** — created by an Administrator.
 
-## Next
-V5.1 Learning Engine → V5.2 Assessment Engine → V5.3 Practical Intelligence → V5.4 AI Engine → V5.5 Coding Studio → V5.6 Analytics → V5.7 Parent & Communication → V5.8 School Administration.
+Volo does **not** create or support:
+- Super Admin
+- Parent/Guardian accounts
+- Demo accounts
+- Default passwords
+- AI features
+
+## Core platform
+
+- Professional Volo dashboard and responsive shell
+- Courses and lessons
+- Curriculum Explorer
+- Curriculum-aligned lesson creation
+- Quizzes and assessment attempts
+- Assignments and teacher grading
+- Practical Studio / virtual laboratory experiences
+- Practical design aligned to verified curriculum indicators
+- Learner progress
+- Teacher learner monitoring
+- Notifications/activity records
+- User management
+- Security headers and secure sessions
+
+## No seeded users
+
+The application never seeds a user account.
+
+On first startup, the app requires:
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `SECRET_KEY`
+
+If an Administrator does not already exist, Volo creates exactly one from those environment variables. If they are missing, startup fails rather than creating a default account.
+
+## Deployment
+
+### Local verification
+1. Create a Python virtual environment.
+2. Install `requirements.txt`.
+3. Copy `.env.example` to `.env`.
+4. Set unique production values for `SECRET_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`.
+5. Run `python run.py` for a development smoke test.
+
+### Production
+Use a Python-capable host and a WSGI server (for example Gunicorn or the provider's managed WSGI process). Do not expose Flask's development server directly to the public internet.
+
+Set:
+- `SECRET_KEY`
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `SESSION_COOKIE_SECURE=1`
+
+Enable HTTPS and database/file backups.
+
+## Important migration note
+
+This V6 package is designed to start with a clean production database. Do not copy a database containing the previous V5 demo accounts into production.
+
+## Interface
+
+The existing Volo HTML/CSS/JavaScript interface is retained as the foundation. The WordPress block-editor redesign is not required.
+
+## AI
+
+AI functionality has been removed from the production V6 application.
