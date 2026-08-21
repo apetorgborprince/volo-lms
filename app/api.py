@@ -130,24 +130,58 @@ def list_students():
         """).fetchall()
     return ok([dict(r) for r in rows])
 
+
+@bp.post("/teachers")
+@role_required("admin")
+def create_teacher():
+    data = request.get_json(force=True)
+    username = (data.get("username") or "").strip()
+    password = data.get("password") or ""
+    name = (data.get("full_name") or "").strip()
+    if not username or not name or len(password) < 12:
+        return jsonify(ok=False, error="Full name, username and a password of at least 12 characters are required."), 400
+    db = get_db()
+    try:
+        cur = db.execute(
+            """INSERT INTO users(username,password_hash,role,full_name,class_name,subject_focus)
+               VALUES(?,?,?,?,?,?)""",
+            (username, hash_password(password), "tutor", name, data.get("class_name"), data.get("subject_focus"))
+        )
+        db.commit()
+        return ok(id=cur.lastrowid)
+    except sqlite3.IntegrityError:
+        return jsonify(ok=False, error="Username already exists."), 409
+
 @bp.post("/students")
-@role_required("admin","tutor")
+@role_required("admin")
 def create_student():
     data = request.get_json(force=True)
     username = (data.get("username") or "").strip()
     password = data.get("password") or ""
     name = (data.get("full_name") or "").strip()
-    if not username or not password or not name:
-        return jsonify(ok=False,error="Full name, username and password are required"),400
+    if not username or not name or len(password) < 12:
+        return jsonify(ok=False, error="Full name, username and a password of at least 12 characters are required."), 400
     db = get_db()
     try:
-        cur = db.execute("""INSERT INTO users(username,password_hash,role,full_name,class_name)
-                            VALUES(?,?,?,?,?)""",
-                         (username,hash_password(password),"student",name,data.get("class_name")))
+        cur = db.execute(
+            """INSERT INTO users(username,password_hash,role,full_name,class_name)
+               VALUES(?,?,?,?,?)""",
+            (username, hash_password(password), "student", name, data.get("class_name"))
+        )
         db.commit()
         return ok(id=cur.lastrowid)
     except sqlite3.IntegrityError:
-        return jsonify(ok=False,error="Username already exists"),409
+        return jsonify(ok=False, error="Username already exists."), 409
+
+@bp.get("/teachers")
+@role_required("admin")
+def list_teachers():
+    rows = get_db().execute(
+        """SELECT id,username,full_name,class_name,subject_focus,active,created_at
+           FROM users WHERE role='tutor' ORDER BY full_name"""
+    ).fetchall()
+    return ok([dict(r) for r in rows])
+
 
 @bp.post("/progress/<int:lesson_id>/complete")
 @role_required("student")
@@ -200,7 +234,7 @@ def import_students():
     for r in rows:
         name=str(r.get("Name") or r.get("name") or "").strip()
         username=str(r.get("Username") or r.get("username") or "").strip()
-        password=str(r.get("Password") or r.get("password") or "Temp123!").strip()
+        password=str(r.get("Password") or r.get("password") or "").strip()
         cls=str(r.get("Class") or r.get("class") or "").strip()
         if not name or not username:
             skipped+=1; continue
@@ -317,7 +351,7 @@ def submit_quiz(quiz_id):
     return ok(attempt_id=attempt_id,score=score,total=total,percentage=round((score/total*100) if total else 0,1))
 
 @bp.get("/assignments/<int:assignment_id>")
-@role_required("student","tutor","admin","super_admin")
+@role_required("student","tutor","admin")
 def get_assignment(assignment_id):
     db=get_db()
     a=db.execute("""SELECT a.*,c.title course_title,u.full_name creator
@@ -330,7 +364,7 @@ def get_assignment(assignment_id):
     return ok(assignment=dict(a),submission=dict(submission) if submission else None)
 
 @bp.post("/courses/<int:course_id>/assignments")
-@role_required("tutor","admin","super_admin")
+@role_required("tutor","admin","admin")
 def create_assignment(course_id):
     data=request.get_json(force=True)
     title=(data.get("title") or "").strip()
@@ -373,7 +407,7 @@ def submit_assignment(assignment_id):
     db.commit(); return ok(submission_id=sid)
 
 @bp.get("/assignments/<int:assignment_id>/submissions")
-@role_required("tutor","admin","super_admin")
+@role_required("tutor","admin","admin")
 def assignment_submissions(assignment_id):
     db=get_db()
     a=db.execute("SELECT * FROM assignments WHERE id=? AND active=1",(assignment_id,)).fetchone()
@@ -384,7 +418,7 @@ def assignment_submissions(assignment_id):
     return ok(assignment=dict(a),submissions=[dict(r) for r in rows])
 
 @bp.post("/submissions/<int:submission_id>/grade")
-@role_required("tutor","admin","super_admin")
+@role_required("tutor","admin","admin")
 def grade_submission(submission_id):
     data=request.get_json(force=True)
     db=get_db()
@@ -509,7 +543,7 @@ def practical_registry():
     return ok(practicals=practicals)
 
 @bp.post("/practical-designs")
-@role_required("admin", "tutor", "super_admin")
+@role_required("admin", "tutor")
 def create_practical_design():
     data = request.get_json(force=True)
     required = ("learning_indicator_id", "title", "objective", "apparatus", "safety_instructions", "procedure", "assessment_prompt")
@@ -579,7 +613,7 @@ def v5_overview():
     db = get_db()
     uid, role = session["user_id"], session["role"]
     unread = db.execute("SELECT COUNT(*) n FROM notifications WHERE user_id=? AND read_at IS NULL", (uid,)).fetchone()["n"]
-    if role in ("admin", "super_admin"):
+    if role == "admin":
         data = {
             "role": role,
             "students": db.execute("SELECT COUNT(*) n FROM users WHERE role='student' AND active=1").fetchone()["n"],
@@ -595,10 +629,6 @@ def v5_overview():
                 "assignments": db.execute("SELECT COUNT(*) n FROM assignments WHERE active=1").fetchone()["n"],
                 "submissions_pending": db.execute("SELECT COUNT(*) n FROM assignment_submissions WHERE status='submitted'").fetchone()["n"],
                 "notifications": unread}
-    elif role == "parent":
-        child = db.execute("""SELECT u.id,u.full_name,u.class_name FROM parent_links p
-                              JOIN users u ON u.id=p.student_id WHERE p.parent_id=? LIMIT 1""", (uid,)).fetchone()
-        data = {"role": role, "child": dict(child) if child else None, "notifications": unread}
     else:
         data = {"role": role,
                 "courses": db.execute("SELECT COUNT(*) n FROM enrollments WHERE student_id=?", (uid,)).fetchone()["n"],

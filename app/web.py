@@ -39,17 +39,15 @@ def assignment(course_id, assignment_id): return render_template("assignment.htm
 def practical_studio(): return render_template("practical_studio.html")
 
 @bp.route("/students")
-@role_required("admin","tutor","super_admin")
+@role_required("admin","tutor")
 def students(): return render_template("students.html")
 
 @bp.route("/manage-courses")
-@role_required("admin","tutor","super_admin")
+@role_required("admin","tutor")
 def manage_courses(): return render_template("manage_courses.html")
 
 @bp.route("/studio")
 @role_required("student")
 def studio(): return render_template("studio.html")
 
-@bp.route("/ai")
-@role_required("student","tutor","admin","super_admin")
-def ai(): return render_template("ai.html")
+

@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
-    role TEXT NOT NULL CHECK(role IN ('student','tutor','parent','admin','super_admin')),
+    role TEXT NOT NULL CHECK(role IN ('student','tutor','admin')),
     full_name TEXT NOT NULL,
     class_name TEXT,
     subject_focus TEXT,
@@ -23,13 +23,6 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS parent_links (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    parent_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    student_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    relationship TEXT DEFAULT 'Parent/Guardian',
-    UNIQUE(parent_id, student_id)
-);
 
 CREATE TABLE IF NOT EXISTS achievements (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
