@@ -1,4 +1,40 @@
 {% extends "base.html" %}{% block content %}
-<div class="head"><div><h1>User Management</h1><p>Create and manage Volo Teacher and Student accounts.</p></div><div class="head-actions"><button onclick="addTeacher()">+ Add teacher</button><button onclick="addStudent()">+ Add student</button></div></div>
-<div class="panel"><table><thead><tr><th>Name</th><th>Username</th><th>Class</th><th>Courses</th></tr></thead><tbody id="students"></tbody></table></div>
+<div class="head"><div><h1>People Management</h1><p>Manage learners and teachers. Teachers can add their own learners; administrators can import both roles from Excel.</p></div></div>
+
+{% if session.get('role') in ['admin','tutor'] %}
+<section class="feature-grid management-grid">
+  <article class="panel management-card">
+    <div class="panel-heading"><h2>Add learner</h2><span>{% if session.get('role')=='tutor' %}Learner is assigned to you automatically{% else %}Create an individual learner account{% endif %}</span></div>
+    <form id="learnerForm" class="management-form">
+      <label>Full name<input name="full_name" required></label>
+      <label>Username<input name="username" required></label>
+      <label>Class<input name="class_name" placeholder="e.g. SHS 1" required></label><label>Course<select name="course_id" id="learnerCourse"><option value="">Optional course</option></select></label>
+      <label>Temporary password<input name="password" minlength="12" placeholder="Minimum 12 characters" required></label>
+      <button type="submit">Create learner</button><span id="learnerStatus" class="muted"></span>
+    </form>
+  </article>
+
+  {% if session.get('role')=='admin' %}
+  <article class="panel management-card">
+    <div class="panel-heading"><h2>Add teacher</h2><span>Create a teacher account</span></div>
+    <form id="teacherForm" class="management-form">
+      <label>Full name<input name="full_name" required></label>
+      <label>Username<input name="username" required></label>
+      <label>Subject focus<input name="subject_focus" value="General Science"></label>
+      <label>Temporary password<input name="password" minlength="12" placeholder="Minimum 12 characters" required></label>
+      <button type="submit">Create teacher</button><span id="teacherStatus" class="muted"></span>
+    </form>
+  </article>
+
+  <article class="panel management-card">
+    <div class="panel-heading"><h2>Excel account import</h2><span>Generate temporary passwords automatically</span></div>
+    <p class="muted">Use columns: Role, Name, Username, Email, Class, Subject, Course Code, Password. Leave Password blank to generate a secure temporary password.</p>
+    <div class="management-actions"><a class="buttonlink secondary" href="/api/admin/import/template">Download Excel template</a></div>
+    <form id="excelImportForm" class="management-form"><label>Excel workbook<input type="file" name="file" accept=".xlsx,.xlsm" required></label><button type="submit">Import & generate credentials</button><span id="excelImportStatus" class="muted"></span></form>
+  </article>
+  {% endif %}
+</section>
+
+<section class="panel"><div class="panel-heading"><h2>{% if session.get('role')=='admin' %}All learners{% else %}My learners{% endif %}</h2><span>Active learner accounts</span></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Username</th><th>Class</th><th>Courses</th></tr></thead><tbody id="students"></tbody></table></div></section>
+{% endif %}
 {% endblock %}

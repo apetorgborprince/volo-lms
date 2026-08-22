@@ -10,8 +10,8 @@
 {% if session.get('role') in ['student','tutor','admin'] %}{% endif %}
 {% if session.get('role') in ['admin','tutor'] %}<a href="/students" class="nav-item">👥 <span>People</span></a><a href="/manage-courses" class="nav-item">🗂️ <span>Course Management</span></a>{% endif %}
 {% if session.get('role') == 'student' %}<a href="/studio" class="nav-item">💻 <span>Coding Studio</span></a>{% endif %}
-<div class="nav-section">PLATFORM</div><a href="/dashboard#analytics" class="nav-item">📊 <span>Analytics</span></a>
-<a href="/dashboard#notifications" class="nav-item">🔔 <span>Notifications</span></a><a href="/dashboard#profile" class="nav-item">👤 <span>My Profile</span></a>
+<div class="nav-section">PLATFORM</div><a href="/analytics" class="nav-item">📊 <span>Analytics</span></a>
+<a href="/dashboard#notifications" class="nav-item">🔔 <span>Notifications</span></a><a href="/profile" class="nav-item">👤 <span>My Profile</span></a><a href="/change-password" class="nav-item">🔐 <span>Security</span></a>
 </nav><div class="sidebar-bottom"><a href="/logout" class="nav-item">↪ <span>Sign out</span></a></div></aside>
 <section class="main-shell"><header class="topbar"><button class="mobile-menu" onclick="document.body.classList.toggle('sidebar-open')">☰</button>
 <div class="searchbox">⌕ <input id="globalSearch" placeholder="Search Volo..." aria-label="Search"></div>
