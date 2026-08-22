@@ -383,8 +383,8 @@ function renderAssessment(){
   assessmentState.textContent=complete?"Practical completed — submit your evidence.":"Complete all practical steps to unlock submission.";
   assessment.innerHTML=complete?`<div class="assessment-card"><h3>Practical submission</h3><p>Use your observations and measurements to answer the following.</p><label>What did you observe?<textarea class="textarea" id="a1"></textarea></label><label>What evidence supports your conclusion?<textarea class="textarea" id="a2"></textarea></label><label>What would you improve in the investigation?<textarea class="textarea" id="a3"></textarea></label><button class="primary" onclick="submitAssessment()">Submit practical</button><div id="submissionResult"></div></div>`:`<div class="locked-assessment">🔒 Complete the procedure steps and record evidence to unlock the assessment.</div>`;
 }
-window.submitAssessment=function(){labState.score=Math.max(labState.score,85);labScore.textContent=`Score: ${labState.score}%`;document.getElementById("submissionResult").innerHTML=`<div class="result success">Practical submitted. Evidence recorded. Teacher review can use the observation and assessment responses.</div>`;assessmentState.textContent="Submitted";}
-function saveLabRecord(){labState.notes=notes.value;localStorage.setItem("v4lab:"+currentLab,JSON.stringify(labState));benchState.textContent="Record saved";}
+window.submitAssessment=async function(){labState.score=Math.max(labState.score,85);labScore.textContent=`Score: ${labState.score}%`;const evidence=[document.getElementById("a1")?.value||"",document.getElementById("a2")?.value||"",document.getElementById("a3")?.value||""].join("\n\n");try{await api(`/api/practicals/${encodeURIComponent(currentLab)}/session`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({status:"submitted",score:labState.score,observations:labState.observation,evidence})});document.getElementById("submissionResult").innerHTML=`<div class="result success">Practical submitted and saved. Your teacher can review the evidence.</div>`;assessmentState.textContent="Submitted"}catch(e){document.getElementById("submissionResult").innerHTML=`<div class="result error">${esc(e.message)}</div>`}};
+async function saveLabRecord(){labState.notes=notes.value;localStorage.setItem("v4lab:"+currentLab,JSON.stringify(labState));try{await api(`/api/practicals/${encodeURIComponent(currentLab)}/session`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({status:labState.done>=LABS[currentLab].steps.length?"completed":"in_progress",score:labState.score,observations:labState.observation,evidence:labState.notes})});benchState.textContent="Record saved to Volo"}catch(e){benchState.textContent="Saved locally — server sync unavailable"}}
 
 document.addEventListener("DOMContentLoaded",loadPracticalStudio);
 
@@ -407,3 +407,58 @@ async function loadAssignment(){
  }catch(e){document.getElementById("submissionPanel").innerHTML=`<div class="panel lesson-loading">${esc(e.message)}</div>`}
 }
 document.addEventListener("DOMContentLoaded",loadAssignment);
+
+/* ============================================================
+   V6 MANAGEMENT UPGRADES
+   ============================================================ */
+async function v6LoadPeopleForms(){
+ const learnerCourse=document.getElementById('learnerCourse');
+ if(learnerCourse){try{const x=await api('/api/courses');learnerCourse.innerHTML='<option value="">Optional course</option>'+(x.data||[]).map(c=>`<option value="${c.id}">${esc(c.code||'')} · ${esc(c.title)}</option>`).join('')}catch(_){}}
+ const learnerForm=document.getElementById('learnerForm');
+ if(learnerForm){learnerForm.onsubmit=async e=>{e.preventDefault();const status=document.getElementById('learnerStatus');const raw=Object.fromEntries(new FormData(e.target));try{await api('/api/students',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(raw)});status.textContent='Learner account created successfully.';e.target.reset();loadStudents();}catch(err){status.textContent=err.message}}}
+ const teacherForm=document.getElementById('teacherForm');
+ if(teacherForm){teacherForm.onsubmit=async e=>{e.preventDefault();const status=document.getElementById('teacherStatus');const raw=Object.fromEntries(new FormData(e.target));try{await api('/api/teachers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(raw)});status.textContent='Teacher account created successfully.';e.target.reset();}catch(err){status.textContent=err.message}}}
+ const importForm=document.getElementById('excelImportForm');
+ if(importForm){importForm.onsubmit=async e=>{e.preventDefault();const status=document.getElementById('excelImportStatus');try{const r=await fetch('/api/admin/import/users',{method:'POST',body:new FormData(e.target)});if(!r.ok){let j={};try{j=await r.json()}catch(_){}throw new Error(j.error||'Import failed.')}const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='volo-import-credentials.xlsx';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);status.textContent='Import complete. Your credentials workbook has been downloaded.';e.target.reset();loadStudents();}catch(err){status.textContent=err.message}}}
+}
+
+async function v6LoadCourseOptions(){
+ const ids=['courseTeacher','resourceCourse','formCourse','lessonCourse'];
+ const x=await api('/api/courses');
+ const courses=x.data||[];
+ ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;const first=el.options.length?el.options[0].outerHTML:'<option value="">Select a course</option>';el.innerHTML=first+courses.map(c=>`<option value="${c.id}">${esc(c.code||'')} · ${esc(c.title)}</option>`).join('')});
+ const teacher=document.getElementById('courseTeacher');
+ if(teacher){const t=await api('/api/teachers');teacher.innerHTML='<option value="">Select a teacher</option>'+(t.data||[]).map(v=>`<option value="${v.id}">${esc(v.full_name)} · ${esc(v.username)}</option>`).join('')}
+}
+
+async function v6LoadCourseManagement(){
+ const courseForm=document.getElementById('courseForm');
+ if(courseForm){courseForm.onsubmit=async e=>{e.preventDefault();const raw=Object.fromEntries(new FormData(e.target));if(!raw.tutor_id){document.getElementById('courseStatus').textContent='Select a teacher to assign this course.';return}try{await api('/api/courses',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(raw)});document.getElementById('courseStatus').textContent='Course created and assigned to the teacher.';e.target.reset();await v6LoadCourseOptions();loadCourses('manageCourses')}catch(err){document.getElementById('courseStatus').textContent=err.message}}}
+ const noteForm=document.getElementById('noteForm');
+ if(noteForm){noteForm.onsubmit=async e=>{e.preventDefault();const status=document.getElementById('noteStatus');const raw=new FormData(e.target);const id=raw.get('course_id');try{await api(`/api/courses/${id}/notes`,{method:'POST',body:raw});status.textContent='Note published to learners.';e.target.reset();}catch(err){status.textContent=err.message}}}
+ const googleForm=document.getElementById('googleForm');
+ if(googleForm){googleForm.onsubmit=async e=>{e.preventDefault();const status=document.getElementById('googleFormStatus');const raw=Object.fromEntries(new FormData(e.target));const id=raw.course_id;delete raw.course_id;try{await api(`/api/courses/${id}/google-forms`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(raw)});status.textContent='Google Form deployed to the course.';e.target.reset();}catch(err){status.textContent=err.message}}}
+}
+
+async function loadCourseResources(id,data){
+ const notes=document.getElementById('courseNotes'),forms=document.getElementById('googleForms');
+ if(notes){const rows=data.notes||[];notes.innerHTML=rows.length?rows.map(n=>`<article class="resource-card"><b>${esc(n.title)}</b><p>${esc(n.description||'')}</p><small>Published by ${esc(n.creator||'Volo teacher')}</small><div class="resource-actions">${n.file_path?`<a class="buttonlink secondary" href="/api/notes/${n.id}/download">Download note</a>`:''}${n.external_url?`<a class="buttonlink secondary" href="${esc(n.external_url)}" target="_blank" rel="noopener">Open note</a>`:''}</div></article>`).join(''):'<p class="muted">No learner notes have been published yet.</p>'}
+ if(forms){const rows=data.google_forms||[];forms.innerHTML=rows.length?rows.map(f=>`<article class="resource-card"><b>${esc(f.title)}</b><p>${esc(f.description||'')}</p><small>Published by ${esc(f.creator||'Volo teacher')}</small><div class="resource-actions"><a class="buttonlink" href="${esc(f.published_url)}" target="_blank" rel="noopener">Open Google Form</a><button class="secondary" type="button" onclick="toggleGoogleForm(${f.id},'${esc(f.published_url)}')">Open inside Volo</button></div><div id="googleEmbed-${f.id}" hidden></div></article>`).join(''):'<p class="muted">No Google Forms have been deployed for this course.</p>'}
+}
+function toggleGoogleForm(id,url){const el=document.getElementById(`googleEmbed-${id}`);if(!el)return;el.hidden=!el.hidden;if(!el.hidden)el.innerHTML=`<iframe class="form-embed" src="${url}" title="Google Form"></iframe>`;else el.innerHTML=''}
+
+const _v6OldLoadCourseDetail=loadCourseDetail;
+loadCourseDetail=async function(){
+ const lessons=document.getElementById('lessons');if(!lessons)return;
+ try{const id=location.pathname.split('/').pop();const x=await api('/api/courses/'+id);await _v6OldLoadCourseDetail();await loadCourseResources(id,x);}catch(e){console.error(e)}
+};
+
+document.addEventListener('DOMContentLoaded',()=>{v6LoadPeopleForms();v6LoadCourseManagement();v6LoadCourseOptions().catch(()=>{});});
+
+
+async function loadNotificationBadge(){const el=document.querySelector('.notification-dot');if(!el)return;try{const x=await api('/api/notifications/unread-count');el.textContent=x.count?`● ${x.count}`:'●';el.title=x.count?`${x.count} unread notifications`:'No unread notifications'}catch(_){}}
+document.addEventListener('DOMContentLoaded',loadNotificationBadge);
+
+async function loadNotificationPanel(){const el=document.getElementById('notificationList');if(!el)return;try{const x=await api('/api/notifications');el.innerHTML=(x.data||[]).map(n=>`<article class="notification-item ${n.read_at?'':'unread'}"><div><b>${esc(n.title)}</b><p>${esc(n.body)}</p><small>${esc(n.created_at)}</small></div>${n.read_at?'':'<button onclick="markNotification('+n.id+')">Mark read</button>'}</article>`).join('')||'<p class="muted">No notifications yet.</p>'}catch(e){el.innerHTML=`<p class="muted">${esc(e.message)}</p>`}}
+window.markNotification=async function(id){try{await api('/api/notifications/'+id+'/read',{method:'POST'});loadNotificationPanel();loadNotificationBadge()}catch(e){}};
+document.addEventListener('DOMContentLoaded',()=>{loadNotificationPanel();const b=document.getElementById('markAllNotifications');if(b)b.onclick=async()=>{await api('/api/notifications/read-all',{method:'POST'});loadNotificationPanel();loadNotificationBadge()}});
